@@ -85,6 +85,12 @@ N_exclude = 20  # jours autour de la date cible à exclure
 N_best = st.slider("Nombre d'analogues à afficher", min_value=1, max_value=10, value=3)
 
 # ==============================
+# 6b. Paramètres de prévision
+# ==============================
+lead_times = [1, 2, 3, 4, 5]  # jours de prévision
+
+
+# ==============================
 # 7. Calcul des distances
 # ==============================
 x_ref = X[day]
@@ -108,6 +114,31 @@ st.subheader("Résultats")
 st.write("**Jour cible :**", date_ref)
 for i, idx in enumerate(idx_sorted):
     st.write(f"**Analogue {i+1} :** {dates_analog[i]} — Distance RMS : {dist[idx]:.2f}")
+
+# ==============================
+# 8b. Prévisions analogiques
+# ==============================
+forecast = {}   # forecast[k] = champ moyen à échéance k
+truth = {}      # truth[k] = champ réel à échéance k
+
+for k in lead_times:
+    fields = []
+
+    for idx in idx_sorted:
+        if idx + k < nt:
+            fields.append(z.isel(time=idx + k).values)
+
+    # Moyenne des analogues si au moins 1 dispo
+    if len(fields) > 0:
+        forecast[k] = np.mean(fields, axis=0)
+    else:
+        forecast[k] = None
+
+    # Vérité terrain
+    if day + k < nt:
+        truth[k] = z.isel(time=day + k).values
+    else:
+        truth[k] = None
 
 # ==============================
 # 9. Affichage des cartes avec échelle fixe et isolignes
@@ -147,3 +178,58 @@ for i, idx in enumerate(idx_sorted):
     plt.colorbar(pcm, ax=ax, orientation="horizontal", pad=0.05)
 
 st.pyplot(fig)
+# ==============================
+# 10. Affichage des prévisions analogiques
+# ==============================
+st.subheader("Prévisions analogiques (moyenne des N voisins)")
+
+for k in lead_times:
+    if forecast[k] is None or truth[k] is None:
+        continue
+
+    fig, axes = plt.subplots(
+        1, 2, figsize=(10, 4),
+        subplot_kw={"projection": ccrs.PlateCarree()}
+    )
+
+    # Prévision
+    ax = axes[0]
+    pcm = ax.pcolormesh(
+        z.longitude, z.latitude,
+        forecast[k],
+        shading="nearest",
+        cmap=cmap, vmin=vmin, vmax=vmax
+    )
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linewidth=0.5)
+    ax.set_title(f"Prévision analogue +{k} jours")
+    cs = ax.contour(
+        z.longitude, z.latitude,
+        forecast[k],
+        levels=np.arange(vmin, vmax+500, 500),
+        colors="black", linewidths=0.6
+    )
+    ax.clabel(cs, fmt="%d", fontsize=7)
+    plt.colorbar(pcm, ax=ax, orientation="horizontal", pad=0.05)
+
+    # Réalité
+    ax = axes[1]
+    pcm = ax.pcolormesh(
+        z.longitude, z.latitude,
+        truth[k],
+        shading="nearest",
+        cmap=cmap, vmin=vmin, vmax=vmax
+    )
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linewidth=0.5)
+    ax.set_title(f"Réalité +{k} jours")
+    cs = ax.contour(
+        z.longitude, z.latitude,
+        truth[k],
+        levels=np.arange(vmin, vmax+500, 500),
+        colors="black", linewidths=0.6
+    )
+    ax.clabel(cs, fmt="%d", fontsize=7)
+    plt.colorbar(pcm, ax=ax, orientation="horizontal", pad=0.05)
+
+    st.pyplot(fig)
