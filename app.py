@@ -69,8 +69,23 @@ X = build_X(z)
 # ==============================
 # 5. Sélection de la date utilisateur
 # ==============================
-date_input = st.date_input("Choisissez une date")
+
+import datetime
+
+# Date minimale et maximale pour le sélecteur
+min_date = datetime.date(1940, 1, 1)
+max_date = datetime.date.today()  # ou np.datetime64(z.time.max().values)
+
+# Sélecteur de date
+date_input = st.date_input(
+    "Choisissez une date",
+    value=max_date,  # date par défaut affichée
+    min_value=min_date,
+    max_value=max_date
+)
+
 date_user = np.datetime64(date_input)
+
 
 z_sel = z.sel(time=date_user, method="nearest")
 day = int(np.where(z.time.values == z_sel.time.values)[0][0])
