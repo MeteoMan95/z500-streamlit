@@ -60,9 +60,9 @@ st.caption(f"{nt} dates — grille {ny} × {nx}")
 # 4. Construction de la matrice X (UNE seule fois)
 # ==============================
 @st.cache_data
-def build_X(z):
+def build_X(_z):
     nt, ny, nx = _z.shape
-    return z.values.reshape(nt, ny * nx)
+    return _z.values.reshape(nt, ny * nx)
 
 X = build_X(z)
 
