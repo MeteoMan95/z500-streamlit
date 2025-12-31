@@ -130,7 +130,7 @@ ax.coastlines()
 ax.add_feature(cfeature.BORDERS, linewidth=0.5)
 ax.set_title(f"Jour cible\n{date_ref}")
 # tracé des isolignes
-cs = ax.contour(z.longitude, z.latitude, z.isel(time=day), levels=np.arange(vmin, vmax+50, 50), colors="black", linewidths=0.7)
+cs = ax.contour(z.longitude, z.latitude, z.isel(time=day), levels=np.arange(vmin, vmax+500, 500), colors="black", linewidths=0.7)
 ax.clabel(cs, fmt="%d", fontsize=8)
 plt.colorbar(pcm, ax=ax, orientation="horizontal", pad=0.05)
 
