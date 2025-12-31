@@ -20,7 +20,7 @@ st.title("Analogue atmosphérique Z500")
 # 2. Téléchargement du dataset (1 seule fois)
 # ==============================
 DATA_FILE = "z500_concatené.nc"
-DATA_URL = "https://zenodo.org/record/1234567/files/z500_concatené.nc"
+DATA_URL = "https://zenodo.org/records/18102027/files/z500_concaten%C3%A9.nc?download=1"
 
 @st.cache_resource
 def download_data():
