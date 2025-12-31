@@ -142,7 +142,7 @@ for i, idx in enumerate(idx_sorted):
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.set_title(f"Analogue {i+1}\n{dates_analog[i]}")
     # tracé isolignes
-    cs = ax.contour(z.longitude, z.latitude, z.isel(time=idx), levels=np.arange(vmin, vmax+50, 50), colors="black", linewidths=0.7)
+    cs = ax.contour(z.longitude, z.latitude, z.isel(time=idx), levels=np.arange(vmin, vmax+500, 500), colors="black", linewidths=0.7)
     ax.clabel(cs, fmt="%d", fontsize=8)
     plt.colorbar(pcm, ax=ax, orientation="horizontal", pad=0.05)
 
