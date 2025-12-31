@@ -116,7 +116,7 @@ for i, idx in enumerate(idx_sorted):
 colors = ["violet", "blue", "green", "yellow", "orange", "red"]
 cmap = LinearSegmentedColormap.from_list("violet_to_red", colors)
 
-vmin, vmax = 4900, 6100  # échelle fixe
+vmin, vmax = 49000, 61000  # échelle fixe
 
 fig, axes = plt.subplots(
     1, N_best + 1, figsize=(5*(N_best+1), 5),
