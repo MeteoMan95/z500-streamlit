@@ -61,7 +61,7 @@ st.caption(f"{nt} dates — grille {ny} × {nx}")
 # ==============================
 @st.cache_data
 def build_X(z):
-    nt, ny, nx = z.shape
+    nt, ny, nx = _z.shape
     return z.values.reshape(nt, ny * nx)
 
 X = build_X(z)
